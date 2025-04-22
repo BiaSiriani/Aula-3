@@ -25,13 +25,21 @@ app.get("/users", (req, res) => {
     res.json(userService.getUsers())
 })
 
-app.delete("/users/:id", (req, res) => {
-    const id = parseInt(req.params.id) //converte id em numero
+app.delete("/users/:id", async (req, res) => {
+    const id = parseInt(req.params.id) 
+    //converte id em numero
     try {
-        const resultado = userService.deleteUser(id) //tenta excluir o usuario
-        res.status(200).json(resultado) //retorna mensagem de sucesso
+        const resultado = await userService.deleteUser(id) 
+        //tenta excluir o usuario
+        if (!resultado){
+            return res.status(406).json({"Mensagem": "Usuario não existe"});
+        }
+
+        res.status(200).json(resultado) 
+        //retorna mensagem de sucesso
     } catch (erro) {
-        res.status(404).json({ error: erro.message }) //retorna mensagem de erro
+        res.status(404).json({ error: erro.message }) 
+        //retorna mensagem de erro
     }
 })
 
